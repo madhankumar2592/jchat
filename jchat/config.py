@@ -16,13 +16,14 @@ class JChatSettings:
 
     @classmethod
     def from_env(cls) -> "JChatSettings":
+        defaults = cls()
         return cls(
-            provider=os.getenv("JCHAT_PROVIDER", cls.provider).lower(),
-            aws_region=os.getenv("AWS_REGION", os.getenv("AWS_DEFAULT_REGION", cls.aws_region)),
-            bedrock_model_id=os.getenv("JCHAT_BEDROCK_MODEL_ID", cls.bedrock_model_id),
-            max_results=int(os.getenv("JCHAT_MAX_RESULTS", cls.max_results)),
-            chunk_size=int(os.getenv("JCHAT_CHUNK_SIZE", cls.chunk_size)),
-            chunk_overlap=int(os.getenv("JCHAT_CHUNK_OVERLAP", cls.chunk_overlap)),
-            memory_turns=int(os.getenv("JCHAT_MEMORY_TURNS", cls.memory_turns)),
+            provider=os.getenv("JCHAT_PROVIDER", defaults.provider).lower(),
+            aws_region=os.getenv("AWS_REGION", os.getenv("AWS_DEFAULT_REGION", defaults.aws_region)),
+            bedrock_model_id=os.getenv("JCHAT_BEDROCK_MODEL_ID", defaults.bedrock_model_id),
+            max_results=int(os.getenv("JCHAT_MAX_RESULTS", defaults.max_results)),
+            chunk_size=int(os.getenv("JCHAT_CHUNK_SIZE", defaults.chunk_size)),
+            chunk_overlap=int(os.getenv("JCHAT_CHUNK_OVERLAP", defaults.chunk_overlap)),
+            memory_turns=int(os.getenv("JCHAT_MEMORY_TURNS", defaults.memory_turns)),
         )
 
