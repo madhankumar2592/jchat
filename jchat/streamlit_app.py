@@ -23,6 +23,49 @@ from jchat.documents import read_pdf
 st.set_page_config(page_title="jChat · Jewelry Product Assistant", page_icon="💎", layout="wide")
 settings = JChatSettings.from_env()
 
+st.markdown(
+    """
+    <style>
+    :root {
+        --navy: #081a33;
+        --navy-soft: #102b4d;
+        --red: #d44747;
+        --green: #20a36a;
+        --ink: #172235;
+        --muted: #667085;
+        --line: #dfe6ef;
+    }
+    .stApp { background: #f5f7fb; color: var(--ink); }
+    [data-testid="stHeader"] { background: rgba(245,247,251,.9); }
+    [data-testid="stSidebar"] { background: var(--navy); border-right: 1px solid #1e3b60; }
+    [data-testid="stSidebar"] * { color: #eef5ff !important; }
+    [data-testid="stSidebar"] .stCaption { color: #a9bfd8 !important; }
+    .brand { display:flex; align-items:center; gap:.8rem; margin: .4rem 0 1.4rem; }
+    .brand-mark { width:42px; height:42px; border-radius:12px; display:grid; place-items:center;
+        background: linear-gradient(135deg, var(--red), #f18a55); color:white; font-size:22px;
+        box-shadow: 0 8px 20px rgba(212,71,71,.28); }
+    .brand h1 { margin:0; color:white; font-size:1.5rem; letter-spacing:.02em; }
+    .brand p { margin:.15rem 0 0; color:#a9bfd8; font-size:.75rem; }
+    .hero { background: linear-gradient(110deg, var(--navy), var(--navy-soft)); border-radius:18px;
+        padding:1.35rem 1.6rem; color:white; margin: .4rem 0 1.2rem;
+        box-shadow: 0 10px 28px rgba(8,26,51,.16); border-left: 5px solid var(--red); }
+    .hero h2 { margin:0; font-size:1.8rem; }
+    .hero p { margin:.35rem 0 0; color:#c2d2e5; }
+    [data-testid="stChatMessage"] { border:1px solid var(--line); border-radius:14px; padding:.65rem .8rem; background:white; }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) { border-left:4px solid var(--red); }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) { border-left:4px solid var(--green); }
+    [data-testid="stChatInput"] { border-color: var(--navy-soft); }
+    .stButton > button { border-radius:9px; border:1px solid var(--navy-soft); font-weight:600; }
+    .stButton > button:hover { border-color: var(--red); color: var(--red); }
+    [data-testid="stMetric"] { background:white; border:1px solid var(--line); border-radius:12px; padding:.7rem; }
+    footer { visibility:hidden; }
+    </style>
+    <div class="brand"><div class="brand-mark">💎</div><div><h1>jChat</h1><p>Enterprise jewelry intelligence</p></div></div>
+    <div class="hero"><h2>Jewelry Product Assistant</h2><p>Search your product catalog and get grounded answers from your documents.</p></div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 @st.cache_resource
 def build_application(provider: str, region: str, model_id: str, memory_turns: int) -> ChatApplication:
@@ -54,9 +97,7 @@ with st.sidebar:
     uploads = st.file_uploader("Add product PDFs", type=["pdf"], accept_multiple_files=True)
 
 app = build_application(provider, region, model_id, settings.memory_turns)
-st.title("Jewelry Product Assistant")
-st.write("Ask about materials, dimensions, care instructions, variants, or certifications in your PDFs.")
-st.caption(f"Indexed chunks: {app.retriever.count()} · Provider: {provider.upper()} · Model: {model_id}")
+st.caption(f"Ask about materials, dimensions, care instructions, variants, or certifications · {app.retriever.count()} indexed chunks · {provider.upper()} provider")
 
 if uploads:
     for upload in uploads:
