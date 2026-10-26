@@ -1,27 +1,44 @@
+# jChat: jewelry product assistant
 
+This POC uses AWS Bedrock Converse for generation, local PDF extraction, an in-memory lexical vector adapter, chat memory, and Streamlit. The application core is separated from adapters so the retriever can later be replaced by Amazon OpenSearch Serverless or Milvus without changing the UI or use cases.
 
+The UI starts in **Mock** mode, so it does not need AWS credentials. Switch the sidebar provider to **AWS** after configuring your AWS profile.
 
-# AIR LEGION
+## Run
 
-## Overview
+```powershell
+cd D:\CodeBase\GenAI\genai-hackathon-main
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-jchat.txt
+$env:AWS_PROFILE = "your-profile"
+$env:AWS_REGION = "us-west-2"
+streamlit run jchat/streamlit_app.py
+```
 
-AIR LEGION is a sophisticated application designed to leverage Retrieval-Augmented Generation (RAG) using AWS Bedrock. It utilizes the `anthropic.claude-3-haiku-20240307-v1:0` foundation model for both knowledge retrieval and generative tasks. The system integrates a knowledge base hosted in Amazon OpenSearch Service (AOSS), specifically tailored with airline domain data to provide accurate and contextually relevant responses.
+For a credential-free demo, omit the AWS variables and leave **Chat provider: Mock** selected. For Bedrock, select **AWS**, choose the model ID, and ensure the IAM identity can call `bedrock:Converse` for that model.
 
-## Features
+The AWS identity needs Bedrock model invocation permission for the configured model. The POC does not store AWS keys in source files. It indexes uploaded PDFs in memory for the running process; restarting Streamlit clears the index.
 
-- **Retrieval-Augmented Generation (RAG):** Enhances the generation of responses by retrieving pertinent information from a structured knowledge base.
-- **Knowledge Base Integration:** Utilizes Amazon OpenSearch Service (AOSS) to manage and query a comprehensive airline domain knowledge base.
-- **Foundation Models:** Employs `anthropic.claude-3-haiku-20240307-v1:0` for both retrieving and generating responses, ensuring consistency and accuracy.
+## Git handoff
+
+This reference folder did not contain a Git repository or remote when the POC was created. To publish it, initialize a repository and add your remote:
+
+```powershell
+git init
+git add .
+git commit -m "Build jChat Bedrock RAG POC"
+git remote add origin <your-repository-url>
+git push -u origin main
+```
 
 ## Architecture
 
-1. **AWS Bedrock:** The core service enabling Retrieval-Augmented Generation (RAG) with the `RetrieveAndGenerate` capability.
-2. **Amazon OpenSearch Service (AOSS):** Hosts the knowledge base enriched with airline domain data.
-3. **Foundation Models:** `anthropic.claude-3-haiku-20240307-v1:0` is used for generating responses based on retrieved data from AOSS.
+- `domain.py`: entities with no AWS or Streamlit imports.
+- `ports.py`: model, retriever, and memory boundaries.
+- `application.py`: ingestion and conversational RAG use cases.
+- `bedrock.py`: AWS Bedrock adapter using `converse`.
+- `adapters.py`: in-memory retriever and chat memory; replace the retriever with OpenSearch Serverless or Milvus for production.
+- `documents.py`: PDF extraction adapter.
+- `streamlit_app.py`: thin POC UI.
 
-## Usage
-
-To interact with AIR LEGION, simply query the system with your airline-related questions. The system retrieves relevant information from the knowledge base and generates accurate responses using the integrated foundation model.
-
-## Developed by Team 26
-Shalini , Cijo  , Madhan
