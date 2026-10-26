@@ -1,8 +1,17 @@
 from __future__ import annotations
 
 import uuid
+import sys
+from pathlib import Path
 
 import streamlit as st
+
+# Streamlit can execute this file by absolute path (with a different working
+# directory). Add the repository root so the ``jchat`` package remains importable.
+PACKAGE_ROOT = Path(__file__).resolve().parent
+REPOSITORY_ROOT = PACKAGE_ROOT.parent
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from jchat.adapters import InMemoryConversationMemory, InMemoryRetriever, MockChatModel
 from jchat.application import ChatApplication
